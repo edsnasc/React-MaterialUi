@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 import { Box, ThemeProvider } from "@mui/material";
 import { DarkTheme, LightTheme } from "../themes";
 
@@ -7,18 +7,13 @@ interface IThemeContextData {
     toggleTheme: () => void;
 }
 
-interface MyComponentProps {
+interface IThemeContextProps {
     children: React.ReactNode;
 }
 
-const ThemeContext = createContext({} as IThemeContextData);
+export const ThemeContext = createContext({} as IThemeContextData);
 
-
-export const useAppThemeContext = () => {
-    return useContext(ThemeContext);
-}
-
-export const AppThemeProvider: React.FC<MyComponentProps> = ({ children }) => {
+export const AppThemeProvider: React.FC<IThemeContextProps> = ({ children }) => {
     const [themeName, setThemeName] = useState<'light' | 'dark'>('light');
 
     const toggleTheme = useCallback(() => {
