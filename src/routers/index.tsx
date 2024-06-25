@@ -4,20 +4,20 @@ import { DrawerContext } from "../shared/contexts"
 import { useContext } from "react";
 
 export const AppRoutes = () => {
-   const { toggleDrawerOpen } = useContext(DrawerContext);
+  const { toggleDrawerOpen } = useContext(DrawerContext);
 
-    return (
-        <>
-            <Routes>
-                <Route
-                    path='/pagina-inicial'
-                    element={<Button variant="contained" color="primary" onClick={toggleDrawerOpen}>Drawer Theme</Button>}
-                />
-                <Route
-                    path='*'
-                    element={<Navigate to="/pagina-inicial" />}
-                />
-            </Routes>
-        </>
-    )
+  return (
+    <>
+      <Routes>
+        <Route
+          path='/pagina-inicial'
+          element={<Button variant="contained" color="primary" onClick={toggleDrawerOpen}>Drawer Theme</Button>}
+        />
+        <Route
+          path='*'
+          element={<Navigate to="/pagina-inicial" />}
+        />
+      </Routes>
+    </>
+  )
 }
