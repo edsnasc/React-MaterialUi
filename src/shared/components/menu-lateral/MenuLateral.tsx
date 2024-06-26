@@ -2,7 +2,7 @@ import { Avatar, Box, Divider, Drawer, List, Icon, ListItem, ListItemButton, Lis
 // import HomeIcon from '@mui/icons-material/Home';
 import { ReactNode, useContext } from "react";
 import { DrawerContext } from "../../contexts";
-import { useNavigate } from "react-router-dom";
+import { useMatch, useNavigate, useResolvedPath } from "react-router-dom";
 
 
 interface IMenuLateralProps {
@@ -19,13 +19,16 @@ interface IListItemLinkProps {
 const ListItemLink: React.FC<IListItemLinkProps> = ({ to, icon, label, onClick }) => {
   const navigate = useNavigate();
 
+  const resolvedPath = useResolvedPath(to);
+  const match = useMatch({ path: resolvedPath.pathname, end: false });
+
   const handleClick = () => {
     navigate(to);
     onClick?.()
   };
 
   return (
-    <ListItemButton onClick={handleClick}>
+    <ListItemButton selected={!!match} onClick={handleClick}>
       <ListItemIcon>
         <Icon>{icon}</Icon>
       </ListItemIcon>
@@ -38,7 +41,7 @@ export const MenuLateral: React.FC<IMenuLateralProps> = ({ children }) => {
   const theme = useTheme();
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { isDrawerOpen, toggleDrawerOpen } = useContext(DrawerContext);
+  const { isDrawerOpen, toggleDrawerOpen, drawerOptions } = useContext(DrawerContext);
 
   return (
     <>
@@ -56,14 +59,18 @@ export const MenuLateral: React.FC<IMenuLateralProps> = ({ children }) => {
 
           <Box flex={1}>
             <List>
-              <ListItem disablePadding>
-                <ListItemLink
-                  icon="home"
-                  to="/pagina-inicial"
-                  label="Página inicial"
-                  onClick={smDown ? toggleDrawerOpen : undefined}
-                />
-              </ListItem>
+              {drawerOptions.map(drawerOption => (
+                <ListItem disablePadding key={drawerOption.path}>
+                  <ListItemLink
+                    icon={drawerOption.icon}
+                    to={drawerOption.path}
+                    label={drawerOption.label}
+                    onClick={smDown ? toggleDrawerOpen : undefined}
+                  />
+                </ListItem>
+
+              ))
+              }
             </List>
           </Box>
         </Box>
