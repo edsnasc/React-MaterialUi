@@ -77,18 +77,14 @@ export const MenuLateral: React.FC<IMenuLateralProps> = ({ children }) => {
 
           <Box>
             <List>
-              {drawerOptions.map(drawerOption => (
-                <ListItem disablePadding key={drawerOption.path}>
-                  <ListItemButton onClick={toggleTheme}>
-                    <ListItemIcon>
-                      <Icon>dark_mode</Icon>
-                    </ListItemIcon>
-                    <ListItemText primary="Alternar tema" />
-                  </ListItemButton>
-                </ListItem>
-
-              ))
-              }
+              <ListItem disablePadding>
+                <ListItemButton onClick={toggleTheme}>
+                  <ListItemIcon>
+                    <Icon>dark_mode</Icon>
+                  </ListItemIcon>
+                  <ListItemText primary="Alternar tema" />
+                </ListItemButton>
+              </ListItem>
             </List>
           </Box>
         </Box>
