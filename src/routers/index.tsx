@@ -32,10 +32,10 @@ export const AppRoutes = () => {
           path='/pessoas'
           element={<ListagemDePessoas />}
         />
-        {/* <Route
+        <Route
           path='/pessoas/detalhe/:id'
-          element={<Dashboard />}
-        /> */}
+          element={<p>detalhe</p>}
+        />
         <Route
           path='*'
           element={<Navigate to="/pagina-inicial" />}
