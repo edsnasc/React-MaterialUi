@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
 import { Icon, IconButton, LinearProgress, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom"
+import { useEffect, useMemo, useState } from "react";
 
 import { IListagemPessoa, PessoasService } from "../../shared/services/api/pessoas/PessoasService";
 import { FerramentasDaListagem } from "../../shared/components"
@@ -69,6 +69,7 @@ export const ListagemDePessoas: React.FC = () => {
           mostrarInputBusca
           textoBotaoNovo="Nova"
           textoDaBusca={busca}
+          aoClicarEmNovo={() => navigate('/pessoas/detalhe/nova')}
           aoMudarTextoDeBusca={texto => setSearchParams({ busca: texto, pagina: '1' }, { replace: true })}
         />
       }
