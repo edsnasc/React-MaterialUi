@@ -1,13 +1,17 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { HTMLAttributes, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
-import { createFormSchema } from "../../shared/forms/ValidationForm";
 import { FerramentasDeDetalhe } from "../../shared/components";
 import { VTextField } from "../../shared/forms/VTextField";
 import { LayoutBaseDePagina } from "../../shared/layouts";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+
+// interface IFormData {
+//   nomeCompleto: string;
+//   email: string;
+//   cidadeId: number;
+// }
 
 export const DetalheDePessoas: React.FC = () => {
   const { id = 'nova' } = useParams<'id'>();
@@ -18,10 +22,34 @@ export const DetalheDePessoas: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [nome, setNome] = useState('');
 
-  const { handleSubmit, control } = useForm();
+  const { handleSubmit, control, setValue } = useForm();
 
-  const onSendData = (data: any) => {
-    console.log("Dados do formulário:", data);
+  const onSendData = (dados: any) => {
+    setIsLoading(true);
+
+    if (id === 'nova') {
+      PessoasService
+        .create(dados)
+        .then((result) => {
+          setIsLoading(false);
+
+          if (result instanceof Error) {
+            alert(result.message);
+          } else {
+            navigate(`/pessoas/detalhe/${result}`);
+          }
+        });
+    } else {
+      PessoasService
+        .updateById(Number(id), dados)
+        .then((result) => {
+          setIsLoading(false);
+
+          if (result instanceof Error) {
+            alert(result.message);
+          }
+        });
+    }
   };
 
   useEffect(() => {
@@ -38,6 +66,10 @@ export const DetalheDePessoas: React.FC = () => {
           } else {
             setNome(result.nomeCompleto)
             console.log(result);
+
+            setValue('nomeCompleto', result.nomeCompleto);
+            setValue('email', result.email);
+            setValue('cidadeId', result.cidadeId);
           }
         });
     }
@@ -67,11 +99,7 @@ export const DetalheDePessoas: React.FC = () => {
           mostrarBotaoNovo={id !== 'nova'}
           mostrarBotaoApagar={id !== 'nova'}
 
-          aoClicarEmSalvar={() => {
-
-            formRef.current?.requestSubmit();
-
-          }}
+          aoClicarEmSalvar={() => { formRef.current?.requestSubmit(); }}
           aoClicarEmSalvarEFechar={() => { }}
           aoClicarEmApagar={() => handleDelete(Number(id))}
           aoClicarEmNovo={() => navigate('/pessoas/detalhe/nova')}
@@ -83,7 +111,7 @@ export const DetalheDePessoas: React.FC = () => {
       <form ref={formRef} onSubmit={handleSubmit(onSendData)}>
 
         <VTextField
-          name="name"
+          name="nomeCompleto"
           control={control}
           label="Name"
         />
@@ -93,7 +121,7 @@ export const DetalheDePessoas: React.FC = () => {
           label="Email"
         />
         <VTextField
-          name="CidadeID"
+          name="cidadeId"
           control={control}
           label="Cidade"
         />

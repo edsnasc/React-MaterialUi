@@ -21,6 +21,7 @@ export const VTextField: React.FC<TVTextFieldProps> = ({ name, control, label })
           value={value}
           label={label}
           variant="outlined"
+          InputLabelProps={value ? { shrink: true } : { shrink: false }}
         />
       )}
     />
