@@ -7,17 +7,19 @@ type TVTextFieldProps = TextFieldProps & {
   label: string;
 }
 
-export const VTextField: React.FC<TVTextFieldProps> = ({ name, control, label }) => {
+export const VTextField: React.FC<TVTextFieldProps> = ({ name, control, label, ...rest }) => {
   return (
     <Controller
       name={name}
       control={control}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <TextField
+          {...rest}
+          fullWidth
           helperText={error ? error.message : null}
           size="small"
           error={!!error}
-          onChange={onChange}
+          onChange={e => { onChange(e); rest.onChange?.(e) }}
           value={value}
           label={label}
           variant="outlined"

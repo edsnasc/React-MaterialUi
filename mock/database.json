@@ -13,10 +13,10 @@
       "nomeCompleto": "Carlos Silva"
     },
     {
-      "id": 6,
+      "nomeCompleto": "Lucas Silva",
       "email": "lucas@gmail.com",
       "cidadeId": 1,
-      "nomeCompleto": "Lucas Silva"
+      "id": 6
     },
     {
       "id": 7,

@@ -6,6 +6,7 @@ import { FerramentasDeDetalhe } from "../../shared/components";
 import { VTextField } from "../../shared/forms/VTextField";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { useForm } from "react-hook-form";
+import { Box, Grid, LinearProgress, Paper, Typography } from "@mui/material";
 
 // interface IFormData {
 //   nomeCompleto: string;
@@ -109,23 +110,53 @@ export const DetalheDePessoas: React.FC = () => {
     >
 
       <form ref={formRef} onSubmit={handleSubmit(onSendData)}>
+        <Box margin={1} display="flex" flexDirection="column" component={Paper} variant="outlined">
+          <Grid container direction="column" padding={2} spacing={2}>
+            {isLoading && (
+              <Grid item>
+                <LinearProgress variant="indeterminate" />
+              </Grid>
+            )}
 
-        <VTextField
-          name="nomeCompleto"
-          control={control}
-          label="Name"
-        />
-        <VTextField
-          name="email"
-          control={control}
-          label="Email"
-        />
-        <VTextField
-          name="cidadeId"
-          control={control}
-          label="Cidade"
-        />
+            <Grid item>
+              <Typography variant="h6">Geral</Typography>
+            </Grid>
 
+            <Grid container item direction="row" spacing={2}>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+                <VTextField
+                  name="nomeCompleto"
+                  control={control}
+                  label="Nome Completo"
+                  disabled={isLoading}
+                  onChange={e => setNome(e.target.value)}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container item direction="row" spacing={2}>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+                <VTextField
+                  name="email"
+                  control={control}
+                  label="Email"
+                  disabled={isLoading}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container item direction="row" spacing={2}>
+              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+                <VTextField
+                  name="cidadeId"
+                  control={control}
+                  label="Cidade"
+                  disabled={isLoading}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+        </Box>
       </form>
 
     </LayoutBaseDePagina>
