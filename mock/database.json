@@ -90,5 +90,15 @@
       "cidadeId": "7",
       "id": 18
     }
+  ],
+  "cidades": [
+    {
+      "nome": "Sorocaba",
+      "id": 1
+    },
+    {
+      "nome": "Votorantim",
+      "id": 2
+    }
   ]
 }

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createFormSchema = z.object({
+export const pessoaFormSchema = z.object({
   nomeCompleto: z
     .string()
     .min(1, { message: "Campo obrigatório" })
@@ -9,4 +9,13 @@ export const createFormSchema = z.object({
   cidadeId: z.number().min(1, { message: "Campo obrigatório" }),
 });
 
-export type createFormData = z.infer<typeof createFormSchema>;
+export type pessoaFormData = z.infer<typeof pessoaFormSchema>;
+
+export const cidadeFormSchema = z.object({
+  nome: z
+    .string()
+    .min(1, { message: "Campo obrigatório" })
+    .min(3, { message: "Nome inválido! minimo 3 caracteres" }),
+});
+
+export type cidadeFormData = z.infer<typeof cidadeFormSchema>;

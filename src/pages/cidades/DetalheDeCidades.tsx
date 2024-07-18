@@ -3,20 +3,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 
-import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
-import { pessoaFormSchema } from "../../shared/forms/ValidationForm";
+import { CidadesService } from "../../shared/services/api/cidades/CidadesService";
+import { cidadeFormSchema } from "../../shared/forms/ValidationForm";
 import { FerramentasDeDetalhe } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { useVform, VTextField } from "../../shared/forms";
 import { useForm } from "react-hook-form";
 
 // interface IFormData {
-//   nomeCompleto: string;
-//   email: string;
-//   cidadeId: number;
+//   nome: string;
 // }
 
-export const DetalheDePessoas: React.FC = () => {
+export const DetalheDeCidades: React.FC = () => {
   const { id = 'nova' } = useParams<'id'>();
   const navigate = useNavigate();
 
@@ -25,13 +23,35 @@ export const DetalheDePessoas: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [nome, setNome] = useState('');
 
-  const { handleSubmit, control, setValue } = useForm({ resolver: zodResolver(pessoaFormSchema), });
+  const { handleSubmit, control, setValue } = useForm({ resolver: zodResolver(cidadeFormSchema), });
+
+  useEffect(() => {
+    if (id !== 'nova') {
+      setIsLoading(true);
+
+      CidadesService.getById(Number(id))
+        .then((result) => {
+          setIsLoading(false);
+
+          if (result instanceof Error) {
+            alert(result.message);
+            navigate('/cidades');
+          } else {
+            setNome(result.nome)
+
+            setValue('nome', result.nome);
+          }
+        });
+    } else {
+      setValue('nome', '');
+    }
+  }, [id]);
 
   const onSendData = (dados: any) => {
     setIsLoading(true);
 
     if (id === 'nova') {
-      PessoasService
+      CidadesService
         .create(dados)
         .then((result) => {
           setIsLoading(false);
@@ -40,14 +60,14 @@ export const DetalheDePessoas: React.FC = () => {
             alert(result.message);
           } else {
             if (isSaveAndClose()) {
-              navigate('/pessoas');
+              navigate('/cidades');
             } else {
-              navigate(`/pessoas/detalhe/${result}`);
+              navigate(`/cidades/detalhe/${result}`);
             }
           }
         });
     } else {
-      PessoasService
+      CidadesService
         .updateById(Number(id), dados)
         .then((result) => {
           setIsLoading(false);
@@ -56,48 +76,22 @@ export const DetalheDePessoas: React.FC = () => {
             alert(result.message);
           } else {
             if (isSaveAndClose()) {
-              navigate('/pessoas');
+              navigate('/cidades');
             }
           }
         });
     }
   };
 
-  useEffect(() => {
-    if (id !== 'nova') {
-      setIsLoading(true);
-
-      PessoasService.getById(Number(id))
-        .then((result) => {
-          setIsLoading(false);
-
-          if (result instanceof Error) {
-            alert(result.message);
-            navigate('/pessoas');
-          } else {
-            setNome(result.nomeCompleto)
-
-            setValue('nomeCompleto', result.nomeCompleto);
-            setValue('email', result.email);
-            setValue('cidadeId', result.cidadeId);
-          }
-        });
-    } else {
-      setValue('nomeCompleto', '');
-      setValue('email', '');
-      setValue('cidadeId', '');
-    }
-  }, [id]);
-
   const handleDelete = (id: number) => {
     if (confirm('Realmente deseja apagar?')) {
-      PessoasService.deleteById(id)
+      CidadesService.deleteById(id)
         .then(result => {
           if (result instanceof Error) {
             alert(result.message);
           } else {
             alert('Registro apagado com sucesso!');
-            navigate('/pessoas');
+            navigate('/cidades');
           }
         });
     }
@@ -105,7 +99,7 @@ export const DetalheDePessoas: React.FC = () => {
 
   return (
     <LayoutBaseDePagina
-      titulo={id === 'nova' ? 'Nova pessoa' : nome}
+      titulo={id === 'nova' ? 'Nova cidade' : nome}
       barraDeFerramentas={
         <FerramentasDeDetalhe
           textoBotaoNovo='Nova'
@@ -116,8 +110,8 @@ export const DetalheDePessoas: React.FC = () => {
           aoClicarEmSalvar={save}
           aoClicarEmSalvarEFechar={saveAndClose}
           aoClicarEmApagar={() => handleDelete(Number(id))}
-          aoClicarEmNovo={() => navigate('/pessoas/detalhe/nova')}
-          aoClicarEmVoltar={() => navigate('/pessoas')}
+          aoClicarEmNovo={() => navigate('/cidades/detalhe/nova')}
+          aoClicarEmVoltar={() => navigate('/cidades')}
         />
       }
     >
@@ -138,33 +132,11 @@ export const DetalheDePessoas: React.FC = () => {
             <Grid container item direction="row" spacing={2}>
               <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
                 <VTextField
-                  name="nomeCompleto"
+                  name="nome"
                   control={control}
-                  label="Nome Completo"
+                  label="Nome"
                   disabled={isLoading}
                   onChange={e => setNome(e.target.value)}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
-                <VTextField
-                  name="email"
-                  control={control}
-                  label="Email"
-                  disabled={isLoading}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
-                <VTextField
-                  name="cidadeId"
-                  control={control}
-                  label="Cidade"
-                  disabled={isLoading}
                 />
               </Grid>
             </Grid>
