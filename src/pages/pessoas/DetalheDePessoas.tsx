@@ -1,12 +1,14 @@
+import { Box, Grid, LinearProgress, Paper, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
 
 import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
+import { createFormSchema } from "../../shared/forms/ValidationForm";
 import { FerramentasDeDetalhe } from "../../shared/components";
-import { VTextField } from "../../shared/forms/VTextField";
 import { LayoutBaseDePagina } from "../../shared/layouts";
+import { useVform, VTextField } from "../../shared/forms";
 import { useForm } from "react-hook-form";
-import { Box, Grid, LinearProgress, Paper, Typography } from "@mui/material";
 
 // interface IFormData {
 //   nomeCompleto: string;
@@ -18,12 +20,12 @@ export const DetalheDePessoas: React.FC = () => {
   const { id = 'nova' } = useParams<'id'>();
   const navigate = useNavigate();
 
-  const formRef = useRef<HTMLFormElement>(null);
+  const { formRef, save, saveAndClose, isSaveAndClose } = useVform();
 
   const [isLoading, setIsLoading] = useState(false);
   const [nome, setNome] = useState('');
 
-  const { handleSubmit, control, setValue } = useForm();
+  const { handleSubmit, control, setValue } = useForm({ resolver: zodResolver(createFormSchema), });
 
   const onSendData = (dados: any) => {
     setIsLoading(true);
@@ -37,7 +39,11 @@ export const DetalheDePessoas: React.FC = () => {
           if (result instanceof Error) {
             alert(result.message);
           } else {
-            navigate(`/pessoas/detalhe/${result}`);
+            if (isSaveAndClose()) {
+              navigate('/pessoas');
+            } else {
+              navigate(`/pessoas/detalhe/${result}`);
+            }
           }
         });
     } else {
@@ -48,6 +54,10 @@ export const DetalheDePessoas: React.FC = () => {
 
           if (result instanceof Error) {
             alert(result.message);
+          } else {
+            if (isSaveAndClose()) {
+              navigate('/pessoas');
+            }
           }
         });
     }
@@ -66,13 +76,16 @@ export const DetalheDePessoas: React.FC = () => {
             navigate('/pessoas');
           } else {
             setNome(result.nomeCompleto)
-            console.log(result);
 
             setValue('nomeCompleto', result.nomeCompleto);
             setValue('email', result.email);
             setValue('cidadeId', result.cidadeId);
           }
         });
+    } else {
+      setValue('nomeCompleto', '');
+      setValue('email', '');
+      setValue('cidadeId', '');
     }
   }, [id]);
 
@@ -100,8 +113,8 @@ export const DetalheDePessoas: React.FC = () => {
           mostrarBotaoNovo={id !== 'nova'}
           mostrarBotaoApagar={id !== 'nova'}
 
-          aoClicarEmSalvar={() => { formRef.current?.requestSubmit(); }}
-          aoClicarEmSalvarEFechar={() => { }}
+          aoClicarEmSalvar={save}
+          aoClicarEmSalvarEFechar={saveAndClose}
           aoClicarEmApagar={() => handleDelete(Number(id))}
           aoClicarEmNovo={() => navigate('/pessoas/detalhe/nova')}
           aoClicarEmVoltar={() => navigate('/pessoas')}
