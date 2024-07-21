@@ -124,5 +124,8 @@
       "nome": "São Paulo",
       "id": 8
     }
-  ]
+  ],
+  "auth": {
+    "accessToken": "asdfghjkl"
+  }
 }
