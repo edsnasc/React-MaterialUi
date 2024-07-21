@@ -21,7 +21,7 @@ const getAll = async (
   filter = ""
 ): Promise<TCidadesComTotalCount | Error> => {
   try {
-    const urlRelativa = `/cidades?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&nome_like=${filter}`;
+    const urlRelativa = `/cidades?_page=${page}&nome_like=${filter}`;
 
     const { data, headers } = await api.get(urlRelativa);
 

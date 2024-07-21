@@ -9,6 +9,7 @@ import { FerramentasDeDetalhe } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { useVform, VTextField } from "../../shared/forms";
 import { useForm } from "react-hook-form";
+import { AutoCompleteCidade } from "./components/AutoCompleteCidade";
 
 // interface IFormData {
 //   nomeCompleto: string;
@@ -20,12 +21,16 @@ export const DetalheDePessoas: React.FC = () => {
   const { id = 'nova' } = useParams<'id'>();
   const navigate = useNavigate();
 
+  const [selectedId, setSelectedId] = useState<number | undefined>();
+
   const { formRef, save, saveAndClose, isSaveAndClose } = useVform();
 
   const [isLoading, setIsLoading] = useState(false);
   const [nome, setNome] = useState('');
 
-  const { handleSubmit, control, setValue } = useForm({ resolver: zodResolver(pessoaFormSchema), });
+  const { handleSubmit, control, setValue } = useForm({
+    resolver: zodResolver(pessoaFormSchema),
+  });
 
   const onSendData = (dados: any) => {
     setIsLoading(true);
@@ -69,9 +74,8 @@ export const DetalheDePessoas: React.FC = () => {
 
       PessoasService.getById(Number(id))
         .then((result) => {
-          setIsLoading(false);
-
           if (result instanceof Error) {
+            setIsLoading(false);
             alert(result.message);
             navigate('/pessoas');
           } else {
@@ -79,13 +83,16 @@ export const DetalheDePessoas: React.FC = () => {
 
             setValue('nomeCompleto', result.nomeCompleto);
             setValue('email', result.email);
-            setValue('cidadeId', result.cidadeId);
+
+            setSelectedId(result.cidadeId);
+            setIsLoading(false);
           }
         });
     } else {
+
       setValue('nomeCompleto', '');
       setValue('email', '');
-      setValue('cidadeId', '');
+      setSelectedId(undefined);
     }
   }, [id]);
 
@@ -124,6 +131,7 @@ export const DetalheDePessoas: React.FC = () => {
 
       <form ref={formRef} onSubmit={handleSubmit(onSendData)}>
         <Box margin={1} display="flex" flexDirection="column" component={Paper} variant="outlined">
+
           <Grid container direction="column" padding={2} spacing={2}>
             {isLoading && (
               <Grid item>
@@ -135,9 +143,12 @@ export const DetalheDePessoas: React.FC = () => {
               <Typography variant="h6">Geral</Typography>
             </Grid>
 
+            <Grid display="none"></Grid>
+
             <Grid container item direction="row" spacing={2}>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+              <Grid item xs={12} sm={12} md={6} lg={3}>
                 <VTextField
+                  fullWidth
                   name="nomeCompleto"
                   control={control}
                   label="Nome Completo"
@@ -148,8 +159,9 @@ export const DetalheDePessoas: React.FC = () => {
             </Grid>
 
             <Grid container item direction="row" spacing={2}>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+              <Grid item xs={12} sm={12} md={6} lg={3}>
                 <VTextField
+                  fullWidth
                   name="email"
                   control={control}
                   label="Email"
@@ -157,17 +169,19 @@ export const DetalheDePessoas: React.FC = () => {
                 />
               </Grid>
             </Grid>
-
-            <Grid container item direction="row" spacing={2}>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
-                <VTextField
-                  name="cidadeId"
-                  control={control}
-                  label="Cidade"
-                  disabled={isLoading}
-                />
+            {!isLoading &&
+              <Grid container item direction="row" spacing={2}>
+                <Grid item xs={12} sm={12} md={6} lg={3}>
+                  <AutoCompleteCidade
+                    id={selectedId}
+                    name="cidadeId"
+                    control={control}
+                    label="Cidade"
+                    isExternalLoading={isLoading}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
+            }
           </Grid>
         </Box>
       </form>

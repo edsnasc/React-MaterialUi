@@ -15,12 +15,10 @@ export const VTextField: React.FC<TVTextFieldProps> = ({ name, control, label, .
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <TextField
           {...rest}
-          fullWidth
           helperText={error ? error.message : null}
-          size="small"
           error={!!error}
-          onChange={e => { onChange(e); rest.onChange?.(e) }}
-          value={value}
+          onChange={e => { onChange(e.target.value); rest.onChange?.(e) }}
+          value={value || ''}
           label={label}
           variant="outlined"
           InputLabelProps={value ? { shrink: true } : { shrink: false }}

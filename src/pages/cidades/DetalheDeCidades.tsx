@@ -130,7 +130,7 @@ export const DetalheDeCidades: React.FC = () => {
             </Grid>
 
             <Grid container item direction="row" spacing={2}>
-              <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+              <Grid item xs={12} sm={12} md={6} lg={4}>
                 <VTextField
                   name="nome"
                   control={control}

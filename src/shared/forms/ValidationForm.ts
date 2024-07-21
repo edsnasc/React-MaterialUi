@@ -6,7 +6,7 @@ export const pessoaFormSchema = z.object({
     .min(1, { message: "Campo obrigatório" })
     .min(3, { message: "Nome inválido! minimo 3 caracteres" }),
   email: z.string().email("formato de email invalido!"),
-  cidadeId: z.number().min(1, { message: "Campo obrigatório" }),
+  cidadeId: z.any(),
 });
 
 export type pessoaFormData = z.infer<typeof pessoaFormSchema>;
