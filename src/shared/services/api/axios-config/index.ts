@@ -5,6 +5,11 @@ import { Environment } from "../../../environment";
 
 const api = axios.create({
   baseURL: Environment.URL_BASE,
+  // headers: {
+  //   Authorization: `Bearer ${JSON.parse(
+  //     localStorage.getItem("APP_ACCESS_TOKEN") || ""
+  //   )}`,
+  // },
 });
 
 api.interceptors.response.use(

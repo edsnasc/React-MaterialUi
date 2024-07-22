@@ -7,7 +7,7 @@ interface IAuthContextData {
   login: (email: string, password: string) => Promise<string | void>
 }
 
-const AuthContext = createContext({} as IAuthContextData);
+export const AuthContext = createContext({} as IAuthContextData);
 
 const LOCAL_STORAGE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
 
@@ -20,6 +20,8 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem('APP_ACCESS_TOKEN');
+
+    console.log(accessToken);
 
     if (accessToken) {
       setAccessToken(JSON.parse(accessToken));
